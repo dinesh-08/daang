@@ -94,17 +94,17 @@ public class GuestController {
                 .filter(room -> isRoomAvailable(room, startDate, endDate)) // Check room availability
                 .collect(Collectors.toList());
                 
-          List<Room> deletedRooms = availableRooms.stream()
-        		  .filter(room -> type == null || room.getType().equals(type))
-                  .filter(room -> capacity == null || room.getCapacity() >= capacity)
-                  .filter(room -> price == null || room.getPrice() <= price)
-                .filter(room -> bookingDetailsRepository.existsByRoomAndIsdeletedIsTrue(room)) // Filter rooms marked as deleted
-                .collect(Collectors.toList());
-          filteredRooms.addAll(deletedRooms);
-          Set<Room> uniqueRooms = new HashSet<>(filteredRooms);
+//          List<Room> deletedRooms = availableRooms.stream()
+//        		  .filter(room -> type == null || room.getType().equals(type))
+//                  .filter(room -> capacity == null || room.getCapacity() >= capacity)
+//                  .filter(room -> price == null || room.getPrice() <= price)
+//                .filter(room -> bookingDetailsRepository.existsByRoomAndIsdeletedIsTrue(room)) // Filter rooms marked as deleted
+//                .collect(Collectors.toList());
+//          filteredRooms.addAll(deletedRooms);
+//          Set<Room> uniqueRooms = new HashSet<>(filteredRooms);
 
 
-        return ResponseEntity.ok(new ArrayList<>(uniqueRooms));
+        return ResponseEntity.ok(new ArrayList<>(filteredRooms));
     }
 
     private boolean isRoomAvailable(Room room, LocalDate startDate, LocalDate endDate) {

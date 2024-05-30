@@ -23,14 +23,15 @@ public interface BookingDetailsRepository extends JpaRepository<BookingDetails, 
    
     List<BookingDetails> findByStartDateAfter(String date);
 
-    List<BookingDetails> findByEndDateBefore(String date);
-    @Query("SELECT bd FROM BookingDetails bd WHERE bd.room = :room " +
+    
+    @Query("SELECT bd FROM BookingDetails bd " +
+            "WHERE bd.room = :room " +
+            "AND bd.isdeleted = false " + // Added condition for isdeleted
             "AND (:startDate BETWEEN bd.startDate AND bd.endDate OR :endDate BETWEEN bd.startDate AND bd.endDate OR :startDate <= bd.startDate AND :endDate >= bd.endDate)")
     List<BookingDetails> findByRoomAndStartDateBetweenAndEndDateBetween(
             @Param("room") Room room,
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate
-    );
+            @Param("endDate") LocalDate endDate);
     
     @Modifying
     @Transactional
@@ -43,11 +44,12 @@ public interface BookingDetailsRepository extends JpaRepository<BookingDetails, 
     @Query("SELECT COUNT(r) FROM Room r WHERE r.room_id NOT IN :roomIds")
     long roomscoutning(List<Integer> roomIds);
 
-    @Query("SELECT b FROM BookingDetails b WHERE b.user.role_id = 1 AND b.startDate <= :endDate AND b.endDate >= :startDate AND b.isdeleted = false")
-    List<BookingDetails> findWalkInReservations(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    @Query("SELECT b FROM BookingDetails b WHERE b.user.role_id = 1 AND b.bookedDate = :startDate AND b.endDate >= :startDate")
+    List<BookingDetails> findWalkInReservations(@Param("startDate") LocalDate startDate);
 
-    @Query("SELECT b FROM BookingDetails b WHERE b.user.role_id = 2 AND b.startDate <= :endDate AND b.endDate >= :startDate AND b.isdeleted = false")
-    List<BookingDetails> findOnlineReservations(LocalDate startDate, LocalDate endDate);
+
+    @Query("SELECT b FROM BookingDetails b WHERE b.user.role_id = 2 AND b.bookedDate = :startDate AND b.endDate >= :startDate")
+    List<BookingDetails> findOnlineReservations(@Param("startDate") LocalDate startDate);
 
 	long countByUserId(int id);
 
@@ -90,6 +92,9 @@ public interface BookingDetailsRepository extends JpaRepository<BookingDetails, 
 	    
 	    @Query("SELECT COUNT(bd) FROM BookingDetails bd WHERE bd.room.room_id = :roomId AND bd.booking_id != :bookingId AND (:startDate BETWEEN bd.startDate AND bd.endDate OR :endDate BETWEEN bd.startDate AND bd.endDate)")
 	    int countOverlappingBookingsForRoomExcludingBookingId(Long roomId, Long bookingId, LocalDate startDate, LocalDate endDate);
+
+
+		
 
 }
 

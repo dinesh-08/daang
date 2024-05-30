@@ -358,10 +358,10 @@ public class HotelStaffController {
         
         
         
-        List<BookingDetails> walkInReservations = bookingDetailsRepository.findWalkInReservations(startDate, endDate);
+        List<BookingDetails> walkInReservations = bookingDetailsRepository.findWalkInReservations(startDate);
 
         // Get the count of online reservations for today
-        List<BookingDetails> onlineReservations=bookingDetailsRepository.findOnlineReservations(startDate, endDate);
+        List<BookingDetails> onlineReservations=bookingDetailsRepository.findOnlineReservations(startDate);
         // Create a map to hold the counts
         Map<String, List<?>> countsMap = new HashMap<>();
         countsMap.put("occupiedRooms", bdetails);
